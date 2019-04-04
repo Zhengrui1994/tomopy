@@ -82,7 +82,7 @@ def _wavelength(energy):
 
 def retrieve_phase(
         tomo, pixel_size=1e-4, dist=50, energy=20,
-        alpha=1e-3, pad=True, ncore=None, nchunk=None):
+        alpha=1e-3, pad=True, ncore=None, nchunk=None, filter=None):
     """
     Perform single-step phase retrieval from phase-contrast measurements
     :cite:`Paganin:02`.
