@@ -64,6 +64,7 @@ from tomopy.recon.algorithm import recon
 import tomopy.util.dtype as dtype
 import os.path
 import logging
+import os, shutil
 
 logger = logging.getLogger(__name__)
 
@@ -420,7 +421,7 @@ def find_center_pc(proj1, proj2, tol=0.5, rotc_guess=None):
 
 def write_center(
         tomo, theta, dpath='tmp/center', cen_range=None, ind=None,
-        mask=False, ratio=1., sinogram_order=False, algorithm='gridrec', filter_name='parzen'):
+        mask=False, ratio=1., sinogram_order=False, algorithm='gridrec', filter_name='parzen', overwrite=True):
     """
     Save images reconstructed with a range of rotation centers.
 
@@ -515,6 +516,13 @@ def write_center(
             specifying a custom angle-dependent filter in Fourier domain. The first element
             of each filter should be the zero-frequency component.
     """
+	if overwrite is True:
+        if os.path.exists(dpath):
+            shutil.rmtree(dpath)
+            os.mkdir(dpath)
+        else:
+            os.makedirs(dpath)
+			
     tomo = dtype.as_float32(tomo)
     theta = dtype.as_float32(theta)
 
