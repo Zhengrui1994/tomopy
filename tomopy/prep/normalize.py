@@ -126,7 +126,7 @@ def normalize(arr, flat, dark, cutoff=None, ncore=None, out=None):
         Normalized 3D tomographic data.
     """
     arr = dtype.as_float32(arr)
-    l = np.float32(1e-6)
+    l = np.float32(1.)
     flat = np.mean(flat, axis=0, dtype=np.float32)
     dark = np.mean(dark, axis=0, dtype=np.float32)
 
@@ -134,6 +134,7 @@ def normalize(arr, flat, dark, cutoff=None, ncore=None, out=None):
         denom = ne.evaluate('flat-dark')
         ne.evaluate('where(denom<l,l,denom)', out=denom)
         out = ne.evaluate('arr-dark', out=out)
+		out[out<1] = l
         ne.evaluate('out/denom', out=out, truediv=True)
         if cutoff is not None:
             cutoff = np.float32(cutoff)
