@@ -131,13 +131,19 @@ def normalize(arr, flat, dark, cutoff=None, ncore=None, out=None):
     dark = np.mean(dark, axis=0, dtype=np.float32)
 
     with mproc.set_numexpr_threads(ncore):
-        denom = ne.evaluate('flat-dark')
-        ne.evaluate('where(denom<l,l,denom)', out=denom)
-        out = ne.evaluate('arr-dark', out=out)
-        ne.evaluate('out/denom', out=out, truediv=True)
+        #denom = ne.evaluate('flat-dark')
+        #ne.evaluate('where(denom<l,l,denom)', out=denom)
+        #out = ne.evaluate('arr-dark', out=out)
+        denom = flat - dark
+        denom[denom < l] = l
+        out = arr - dark
+        out[out < l] = l
+        out[:] /= denom
+        #ne.evaluate('out/denom', out=out, truediv=True)
         if cutoff is not None:
             cutoff = np.float32(cutoff)
-            ne.evaluate('where(out>cutoff,cutoff,out)', out=out)
+            out[out > cutoff] = cutoff
+            #ne.evaluate('where(out>cutoff,cutoff,out)', out=out)
     return out
 
 
